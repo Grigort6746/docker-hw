@@ -1,0 +1,37 @@
+services:
+  frontend:
+    image: grigort06/docker-hw:1.0
+    ports:
+      - "8080:80"
+    networks:
+      - app-network
+    depends_on:
+      - api
+
+  api:
+    image: containous/whoami
+    networks:
+      - app-network
+
+  logger:
+    image: busybox
+    command:
+      - sh
+      - -c
+      - |
+        while true; do
+          date '+%Y-%m-%d %H:%M:%S' >> /data/log.txt
+          sleep 5
+        done
+    volumes:
+      - logger-data:/data
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  logger-data:
+    name: docker-hw-logger-data
